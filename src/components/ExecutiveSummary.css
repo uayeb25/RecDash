@@ -44,6 +44,8 @@
   border-radius: 12px;
   padding: 2rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Force text color for non-primary cards (Chrome was inheriting white in some cases) */
+  color: #2d3748;
 }
 
 .metric-card:hover {
