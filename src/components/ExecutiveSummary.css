@@ -79,6 +79,51 @@
   line-height: 1;
 }
 
+/* Icon + color accent variants for engagement metrics */
+.metric-header.with-icon {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+.metric-card .subtext {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: .3px;
+  color: #4a5568;
+  margin-top: 6px;
+  display: block;
+}
+
+.metric-value.small-stack { line-height: 1.05; }
+
+/* Accent color utilities */
+.accent-indigo { border-top: 4px solid #6366f1; }
+.accent-green { border-top: 4px solid #10b981; }
+.accent-amber { border-top: 4px solid #f59e0b; }
+.accent-purple { border-top: 4px solid #8b5cf6; }
+.accent-teal { border-top: 4px solid #14b8a6; }
+.accent-rose { border-top: 4px solid #f43f5e; }
+
+.icon-indigo { background: linear-gradient(135deg,#6366f1,#818cf8); }
+.icon-green { background: linear-gradient(135deg,#10b981,#34d399); }
+.icon-amber { background: linear-gradient(135deg,#f59e0b,#fbbf24); }
+.icon-purple { background: linear-gradient(135deg,#8b5cf6,#a78bfa); }
+.icon-teal { background: linear-gradient(135deg,#14b8a6,#2dd4bf); }
+.icon-rose { background: linear-gradient(135deg,#f43f5e,#fb7185); }
+
 .metric-trend {
   font-size: 0.875rem;
   font-weight: 500;
