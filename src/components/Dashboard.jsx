@@ -12,7 +12,8 @@ const Dashboard = () => {
     },
     institution: 'all',
     course: 'all',
-    class: 'all'
+  class: 'all',
+  country: 'all'
   })
 
   const handleFiltersChange = (newFilters) => {

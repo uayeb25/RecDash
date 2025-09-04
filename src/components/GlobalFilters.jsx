@@ -31,6 +31,14 @@ const GlobalFilters = ({ filters, onFiltersChange }) => {
     { value: 'class-c', label: 'Class C' }
   ]
 
+  const countries = [
+    { value: 'all', label: 'All' },
+    { value: 'mx', label: 'Mexico' },
+    { value: 'co', label: 'Colombia' },
+    { value: 'cl', label: 'Chile' },
+    { value: 'pe', label: 'Peru' }
+  ]
+
   const channels = [
     { value: 'all', label: 'All' },
     { value: 'web-desktop', label: 'Web Desktop' },
@@ -48,7 +56,8 @@ const GlobalFilters = ({ filters, onFiltersChange }) => {
       institution: 'all',
       course: 'all',
       class: 'all',
-      channel: 'all'
+  channel: 'all',
+  country: 'all'
     })
   }
 
@@ -103,6 +112,22 @@ const GlobalFilters = ({ filters, onFiltersChange }) => {
               <option key={classItem.value} value={classItem.value}>
                 {classItem.label}
               </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Country Filter */}
+      <div className="filter-section">
+        <label className="filter-label">Country</label>
+        <div className="filter-control">
+          <select
+            className="filter-select"
+            value={filters.country || 'all'}
+            onChange={(e) => onFiltersChange({ country: e.target.value })}
+          >
+            {countries.map(country => (
+              <option key={country.value} value={country.value}>{country.label}</option>
             ))}
           </select>
         </div>

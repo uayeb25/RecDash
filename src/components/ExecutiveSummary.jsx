@@ -6,13 +6,16 @@ import './ExecutiveSummary.css'
 const ExecutiveSummary = ({ filters }) => {
   const [kpis, setKpis] = useState({
     adoptionRate: { value: 0, trend: 0, loading: true },
+  totalUsers: { value: 0, trend: 0, loading: true },
     recordingDuration: { value: 0, trend: 0, loading: true },
     avgProcessingTime: { value: 0, trend: 0, loading: true },
     averageScore: { value: 0, trend: 0, loading: true },
+  analysisTimeBefore: { value: 0, loading: true },
     completionRate: { value: 0, trend: 0, loading: true },
     retryRate: { value: 0, trend: 0, loading: true },
     reviewRate: { value: 0, trend: 0, loading: true },
-    firstTimeUsers: { value: 0, trend: 0, loading: true }
+  firstTimeUsers: { value: 0, trend: 0, loading: true },
+  retentionRate: { value: 0, trend: 0, loading: true }
   })
 
   // Simulate API call to fetch KPI data
@@ -28,6 +31,11 @@ const ExecutiveSummary = ({ filters }) => {
           trend: Math.random() * 10 - 5, // -5% to +5%
           loading: false
         },
+        totalUsers: {
+          value: Math.floor(Math.random() * (3500 - 2400) + 2400), // absolute users
+          trend: Math.random() * 8 - 4,
+          loading: false
+        },
         recordingDuration: {
           value: Math.random() * (45 - 30) + 30, // 30-45 seconds
           trend: Math.random() * 10 - 5, // -5s to +5s
@@ -36,6 +44,10 @@ const ExecutiveSummary = ({ filters }) => {
         avgProcessingTime: {
           value: Math.random() * (3.0 - 1.5) + 1.5, // 1.5-3.0 seconds
           trend: Math.random() * 1 - 0.5, // -0.5s to +0.5s
+          loading: false
+        },
+        analysisTimeBefore: {
+          value: Math.random() * (4.2 - 3.4) + 3.4, // slower before feature
           loading: false
         },
         averageScore: {
@@ -61,6 +73,11 @@ const ExecutiveSummary = ({ filters }) => {
         firstTimeUsers: {
           value: Math.random() * (150 - 25) + 25, // 25-150 new users
           trend: Math.random() * 40 - 20, // -20 to +20 users
+          loading: false
+        },
+        retentionRate: {
+          value: Math.random() * (68 - 52) + 52, // 52-68%
+          trend: Math.random() * 6 - 3,
           loading: false
         }
       }
@@ -93,6 +110,16 @@ const ExecutiveSummary = ({ filters }) => {
 
           <div className="metric-card">
             <div className="metric-header">
+              <h3>Total Users</h3>
+              <p>Unique students who used the feature</p>
+            </div>
+            <div className="metric-value">
+              {kpis.totalUsers.loading ? '...' : kpis.totalUsers.value.toLocaleString()}
+            </div>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-header">
               <h3>Recording Duration</h3>
               <p>Average time from play to stop button</p>
             </div>
@@ -104,11 +131,19 @@ const ExecutiveSummary = ({ filters }) => {
           <div className="metric-card">
             <div className="metric-header">
               <h3>Analysis Time</h3>
-              <p>Time to analyze recording and generate pronunciation score</p>
+              <p>Current vs baseline before Start/Stop</p>
             </div>
             <div className="metric-value">
               {kpis.avgProcessingTime.loading ? '...' : `${kpis.avgProcessingTime.value.toFixed(1)}s`}
             </div>
+            {!kpis.analysisTimeBefore.loading && !kpis.avgProcessingTime.loading && (
+              <div className="metric-trend status-indicator" style={{marginTop:'0.5rem', fontSize:'0.85rem'}}>
+                Baseline: {kpis.analysisTimeBefore.value.toFixed(1)}s
+                {' '}<span style={{color:'#38a169', fontWeight:600}}>
+                  ({((kpis.analysisTimeBefore.value - kpis.avgProcessingTime.value)/kpis.analysisTimeBefore.value * 100).toFixed(0)}% faster)
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="metric-card primary">
@@ -160,8 +195,17 @@ const ExecutiveSummary = ({ filters }) => {
             <div className="engagement-icon">🎯</div>
             <div className="engagement-content">
               <div className="engagement-value">{kpis.firstTimeUsers.loading ? '...' : `${Math.round(kpis.firstTimeUsers.value)}`}</div>
-              <div className="engagement-label">New Users This Week</div>
-              <div className="engagement-description">Students using recording feature for the first time</div>
+              <div className="engagement-label">New Users in Period</div>
+              <div className="engagement-description">Students using recording feature for first time</div>
+            </div>
+          </div>
+
+          <div className="engagement-card">
+            <div className="engagement-icon">🔁</div>
+            <div className="engagement-content">
+              <div className="engagement-value">{kpis.retentionRate.loading ? '...' : `${kpis.retentionRate.value.toFixed(1)}%`}</div>
+              <div className="engagement-label">Retention Rate</div>
+              <div className="engagement-description">Users returning for additional recordings</div>
             </div>
           </div>
         </div>
@@ -247,6 +291,7 @@ const ExecutiveSummary = ({ filters }) => {
           {/* Usage Share Pie Chart */}
           <div className="chart-card">
             <h3>Usage Distribution</h3>
+            <p className="chart-note">Counts unique users per channel (multi-channel users counted once per channel).</p>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
                 <Pie
@@ -269,6 +314,52 @@ const ExecutiveSummary = ({ filters }) => {
                 </Pie>
                 <Tooltip />
               </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Retention Distribution */}
+          <div className="chart-card">
+            <h3>User Retention (Frequency)</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart
+                data={[
+                  { bucket: '1 Recording', users: 28 },
+                  { bucket: '2-3 Recordings', users: 42 },
+                  { bucket: '4-5 Recordings', users: 19 },
+                  { bucket: '6+ Recordings', users: 11 }
+                ]}
+                margin={{ top: 5, right: 20, left: 10, bottom: 40 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="bucket" angle={-30} textAnchor="end" height={70} tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 12 }} label={{ value: 'Users (%)', angle: -90, position: 'insideLeft' }} />
+                <Tooltip formatter={(value) => [`${value}%`, 'Users']} />
+                <Bar dataKey="users" radius={[4,4,0,0]} fill="#667eea" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Technology Breakdown */}
+          <div className="chart-card">
+            <h3>Technology Breakdown</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart
+                data={[
+                  { tech: 'Chrome', value: 55 },
+                  { tech: 'Safari', value: 18 },
+                  { tech: 'Firefox', value: 9 },
+                  { tech: 'Edge', value: 6 },
+                  { tech: 'Android App', value: 7 },
+                  { tech: 'iOS App', value: 5 }
+                ]}
+                margin={{ top: 5, right: 20, left: 10, bottom: 60 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="tech" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 11 }} />
+                <YAxis label={{ value: 'Users (%)', angle: -90, position: 'insideLeft' }} tick={{ fontSize: 12 }} />
+                <Tooltip formatter={(value) => [`${value}%`, 'Users']} />
+                <Bar dataKey="value" radius={[4,4,0,0]} fill="#10b981" />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
